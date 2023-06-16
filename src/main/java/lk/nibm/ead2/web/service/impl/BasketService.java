@@ -41,31 +41,41 @@ public class BasketService implements IBasketService {
     }
 
     @Override
+    public boolean delete(Long id) {
+        Optional<Basket> basket = basketRepository.findById(id);
+        if (basket.isPresent()) {
+            basketRepository.delete(basket.get());
+        } else {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    @Override
     public Basket saveAll(List<BasketItemDTO> basketItemDTOS) {
 
-        List<BasketItem> cartItemList = new ArrayList<>();
+        List<BasketItem> basketItemList = new ArrayList<>();
 
         Basket basket = Basket.builder()
-                .basketItems(cartItemList)
+                .basketItems(basketItemList)
                 .build();
 
-        basketItemDTOS.forEach(cartItem -> {
-            if (cartItem.getProduct() != null) {
-                Product product = productservice.find(cartItem.getProduct());
+        basketItemDTOS.forEach(basketItem -> {
+            if (basketItem.getProduct() != null) {
+                Product product = productservice.find(basketItem.getProduct());
                 BasketItem item = BasketItem.builder()
                         .product(product)
-                        .quantity(cartItem.getQuantity())
+                        .quantity(basketItem.getQuantity())
                         .basket(basket)
-                        .price(cartItem.getQuantity() * product.getPrice())
+                        .price(basketItem.getQuantity() * product.getPrice())
                         .build();
-
-                cartItemList.add(item);
+                basketItemList.add(item);
             }
         });
 
 
-        if (!cartItemList.isEmpty()) {
-            basket.setAmount(cartItemList.stream().mapToDouble(BasketItem::getPrice).sum());
+        if (!basketItemList.isEmpty()) {
+            basket.setAmount(basketItemList.stream().mapToDouble(BasketItem::getPrice).sum());
             basketRepository.save(basket);
         }
 
