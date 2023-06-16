@@ -26,6 +26,8 @@ public class BasketItem {
     @JoinColumn(name = "PRODUCT_ID")
     private Product product;
 
+    private Double price;
+
     @ManyToOne
     private Basket basket;
 

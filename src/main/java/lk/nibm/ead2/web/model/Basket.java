@@ -20,6 +20,8 @@ public class Basket {
     @Column(name = "ID")
     private Long id;
 
+    private Double amount;
+
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
     private List<BasketItem> basketItems;
 

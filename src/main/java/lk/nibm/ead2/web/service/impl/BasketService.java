@@ -3,6 +3,7 @@ package lk.nibm.ead2.web.service.impl;
 import lk.nibm.ead2.web.model.Basket;
 import lk.nibm.ead2.web.model.BasketItem;
 import lk.nibm.ead2.web.model.BasketItemDTO;
+import lk.nibm.ead2.web.model.Product;
 import lk.nibm.ead2.web.repository.BasketRepository;
 import lk.nibm.ead2.web.service.IBasketService;
 import lk.nibm.ead2.web.service.IProductService;
@@ -40,28 +41,34 @@ public class BasketService implements IBasketService {
     }
 
     @Override
-    public List<BasketItemDTO> saveAll(List<BasketItemDTO> basketItemDTOS) {
+    public Basket saveAll(List<BasketItemDTO> basketItemDTOS) {
 
         List<BasketItem> cartItemList = new ArrayList<>();
+
         Basket basket = Basket.builder()
                 .basketItems(cartItemList)
                 .build();
 
         basketItemDTOS.forEach(cartItem -> {
             if (cartItem.getProduct() != null) {
+                Product product = productservice.find(cartItem.getProduct());
                 BasketItem item = BasketItem.builder()
-                        .product(productservice.find(cartItem.getProduct()))
+                        .product(product)
                         .quantity(cartItem.getQuantity())
                         .basket(basket)
+                        .price(cartItem.getQuantity() * product.getPrice())
                         .build();
+
                 cartItemList.add(item);
             }
         });
 
 
         if (!cartItemList.isEmpty()) {
+            basket.setAmount(cartItemList.stream().mapToDouble(BasketItem::getPrice).sum());
             basketRepository.save(basket);
         }
-        return basketItemDTOS;
+
+        return null;
     }
 }

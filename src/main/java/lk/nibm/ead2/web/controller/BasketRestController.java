@@ -1,5 +1,6 @@
 package lk.nibm.ead2.web.controller;
 
+import lk.nibm.ead2.web.model.Basket;
 import lk.nibm.ead2.web.model.BasketItemDTO;
 import lk.nibm.ead2.web.service.IBasketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class BasketRestController {
     IBasketService basketService;
 
     @PostMapping("/basket")
-    public List<BasketItemDTO> createBasket(@RequestBody List<BasketItemDTO> cartItems) {
+    public Basket createBasket(@RequestBody List<BasketItemDTO> cartItems) {
         return basketService.saveAll(cartItems);
     }
 }

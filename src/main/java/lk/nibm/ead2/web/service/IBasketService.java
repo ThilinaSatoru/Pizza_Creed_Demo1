@@ -8,5 +8,5 @@ import java.util.List;
 public interface IBasketService {
     Basket save(Basket basket);
 
-    List<BasketItemDTO> saveAll(List<BasketItemDTO> basketItemDTOS);
+    Basket saveAll(List<BasketItemDTO> basketItemDTOS);
 }
